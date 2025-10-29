@@ -1,20 +1,18 @@
 module product-catalog-service
 
-go 1.25.3
+go 1.24.5
 
 require (
 	github.com/elastic/go-elasticsearch/v8 v8.19.0
-	github.com/golang/protobuf v1.5.4
 	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/nexus-commerce/nexus-contracts-go v0.0.12
+	github.com/nexus-commerce/nexus-contracts-go v0.0.2
 	github.com/segmentio/kafka-go v0.4.49
 	go.mongodb.org/mongo-driver v1.17.4
 	google.golang.org/grpc v1.76.0
 )
 
 require (
-	connectrpc.com/connect v1.19.1 // indirect
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/elastic/elastic-transport-go/v8 v8.7.0 // indirect
