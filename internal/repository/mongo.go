@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -91,6 +92,9 @@ func (r *MongoRepository) DeleteProductByID(ctx context.Context, id string) erro
 	}
 	_, err = r.MongoCollection.DeleteOne(ctx, primitive.M{"_id": objID})
 	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil
+		}
 		return err
 	}
 

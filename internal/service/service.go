@@ -191,9 +191,6 @@ func (s *Service) UpdateProduct(ctx context.Context, r *productv1.UpdateProductR
 func (s *Service) DeleteProduct(ctx context.Context, id string) error {
 	err := s.mongoRepository.DeleteProductByID(ctx, id)
 	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			return ErrNotFound
-		}
 		return err
 	}
 

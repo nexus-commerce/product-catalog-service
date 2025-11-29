@@ -6,7 +6,7 @@ require (
 	github.com/elastic/go-elasticsearch/v8 v8.19.0
 	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/nexus-commerce/nexus-contracts-go v0.0.2
+	github.com/nexus-commerce/nexus-contracts-go v0.0.8
 	github.com/segmentio/kafka-go v0.4.49
 	go.mongodb.org/mongo-driver v1.17.4
 	google.golang.org/grpc v1.76.0

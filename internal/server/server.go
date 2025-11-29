@@ -7,7 +7,6 @@ import (
 	pb "github.com/nexus-commerce/nexus-contracts-go/product/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"log"
 	"product-catalog-service/internal/service"
 )
 
@@ -28,7 +27,7 @@ func (s *Server) GetProduct(ctx context.Context, r *pb.GetProductRequest) (*pb.G
 		if errors.Is(err, service.ErrNotFound) {
 			return nil, status.Error(codes.NotFound, fmt.Sprintf("pb not found: %v", err))
 		}
-		return nil, err
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &pb.GetProductResponse{
@@ -55,8 +54,7 @@ func (s *Server) ListProducts(ctx context.Context, r *pb.ListProductsRequest) (*
 
 	products, nextPage, err := s.service.ListProducts(ctx, query, r.GetPage(), r.GetPageSize())
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	var productList []*pb.Product
@@ -84,8 +82,7 @@ func (s *Server) ListProducts(ctx context.Context, r *pb.ListProductsRequest) (*
 func (s *Server) CreateProduct(ctx context.Context, r *pb.CreateProductRequest) (*pb.CreateProductResponse, error) {
 	p, err := s.service.CreateProduct(ctx, r.GetProduct())
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &pb.CreateProductResponse{
@@ -107,8 +104,10 @@ func (s *Server) CreateProduct(ctx context.Context, r *pb.CreateProductRequest) 
 func (s *Server) UpdateProduct(ctx context.Context, r *pb.UpdateProductRequest) (*pb.UpdateProductResponse, error) {
 	p, err := s.service.UpdateProduct(ctx, r)
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		if errors.Is(err, service.ErrNotFound) {
+			return nil, status.Error(codes.NotFound, fmt.Sprintf("pb not found: %v", err))
+		}
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &pb.UpdateProductResponse{Product: &pb.Product{
@@ -128,11 +127,7 @@ func (s *Server) UpdateProduct(ctx context.Context, r *pb.UpdateProductRequest) 
 func (s *Server) DeleteProduct(ctx context.Context, r *pb.DeleteProductRequest) (*pb.DeleteProductResponse, error) {
 	err := s.service.DeleteProduct(ctx, r.GetId())
 	if err != nil {
-		if errors.Is(err, service.ErrNotFound) {
-			return nil, status.Error(codes.NotFound, fmt.Sprintf("pb not found: %v", err))
-		}
-		log.Println(err)
-		return nil, err
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &pb.DeleteProductResponse{}, nil
@@ -144,7 +139,7 @@ func (s *Server) GetProductBySKU(ctx context.Context, r *pb.GetProductBySKUReque
 		if errors.Is(err, service.ErrNotFound) {
 			return nil, status.Error(codes.NotFound, fmt.Sprintf("p not found: %v", err))
 		}
-		return nil, err
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &pb.GetProductBySKUResponse{

@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/segmentio/kafka-go"
 	"log"
 	"product-catalog-service/internal/config"
 	"product-catalog-service/internal/service"
 	"sync"
+
+	"github.com/segmentio/kafka-go"
 )
 
 type HandlerFunc func(ctx context.Context, m *kafka.Message) error
