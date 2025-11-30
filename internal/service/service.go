@@ -124,11 +124,11 @@ func (s *Service) CreateProduct(ctx context.Context, p *productv1.Product) (*mod
 		return nil, ErrInvalidName
 	}
 
-	if p.GetPrice() < 0 {
+	if p.GetPrice() <= 0 {
 		return nil, ErrInvalidPrice
 	}
 
-	if p.GetStockQuantity() < 0 {
+	if p.GetStockQuantity() <= 0 {
 		return nil, ErrInvalidStockQty
 	}
 
