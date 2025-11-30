@@ -82,6 +82,12 @@ func (s *Server) ListProducts(ctx context.Context, r *pb.ListProductsRequest) (*
 func (s *Server) CreateProduct(ctx context.Context, r *pb.CreateProductRequest) (*pb.CreateProductResponse, error) {
 	p, err := s.service.CreateProduct(ctx, r.GetProduct())
 	if err != nil {
+		if errors.Is(err, service.ErrInvalidSKU) ||
+			errors.Is(err, service.ErrInvalidName) ||
+			errors.Is(err, service.ErrInvalidPrice) ||
+			errors.Is(err, service.ErrInvalidStockQty) {
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -106,6 +112,12 @@ func (s *Server) UpdateProduct(ctx context.Context, r *pb.UpdateProductRequest) 
 	if err != nil {
 		if errors.Is(err, service.ErrNotFound) {
 			return nil, status.Error(codes.NotFound, fmt.Sprintf("pb not found: %v", err))
+		}
+		if errors.Is(err, service.ErrInvalidSKU) ||
+			errors.Is(err, service.ErrInvalidName) ||
+			errors.Is(err, service.ErrInvalidPrice) ||
+			errors.Is(err, service.ErrInvalidStockQty) {
+			return nil, status.Error(codes.InvalidArgument, err.Error())
 		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}

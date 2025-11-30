@@ -22,6 +22,10 @@ var (
 	ErrNotFound          = errors.New("err not found")
 	ErrSendingEvent      = errors.New("error sending event")
 	ErrInsufficientStock = errors.New("insufficient stock")
+	ErrInvalidSKU        = errors.New("invalid SKU")
+	ErrInvalidName       = errors.New("invalid Name")
+	ErrInvalidPrice      = errors.New("invalid Price")
+	ErrInvalidStockQty   = errors.New("invalid Stock Quantity")
 )
 
 type OrderCreatedEvent struct {
@@ -106,6 +110,22 @@ func (s *Service) ListProducts(ctx context.Context, searchTerm string, page, pag
 func (s *Service) CreateProduct(ctx context.Context, p *productv1.Product) (*model.Product, error) {
 	isActive := p.GetStockQuantity() > 0
 
+	if p.GetSku() == "" {
+		return nil, ErrInvalidSKU
+	}
+
+	if p.GetName() == "" {
+		return nil, ErrInvalidName
+	}
+
+	if p.GetPrice() < 0 {
+		return nil, ErrInvalidPrice
+	}
+
+	if p.GetStockQuantity() < 0 {
+		return nil, ErrInvalidStockQty
+	}
+
 	product := &model.Product{
 		ID:            primitive.NewObjectID(),
 		Sku:           p.GetSku(),
@@ -148,14 +168,26 @@ func (s *Service) UpdateProduct(ctx context.Context, r *productv1.UpdateProductR
 		for _, path := range r.GetUpdateMask().GetPaths() {
 			switch path {
 			case "sku":
+				if r.Product.GetSku() == "" {
+					return nil, ErrInvalidSKU
+				}
 				product.Sku = r.Product.GetSku()
 			case "name":
+				if r.Product.GetName() == "" {
+					return nil, ErrInvalidName
+				}
 				product.Name = r.Product.GetName()
 			case "description":
 				product.Description = r.Product.GetDescription()
 			case "price":
+				if r.Product.GetPrice() < 0 {
+					return nil, ErrInvalidPrice
+				}
 				product.Price = r.Product.GetPrice()
 			case "stock_quantity":
+				if r.Product.GetStockQuantity() < 0 {
+					return nil, ErrInvalidStockQty
+				}
 				product.StockQuantity = r.Product.GetStockQuantity()
 			case "category":
 				product.Category = r.Product.GetCategory()
