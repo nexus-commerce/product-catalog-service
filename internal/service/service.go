@@ -91,8 +91,14 @@ func (s *Service) ListProducts(ctx context.Context, searchTerm string, page, pag
 	if page <= 0 {
 		page = 1
 	}
+	if page > 100 {
+		page = 100
+	}
 	if pageSize <= 0 {
 		pageSize = 10
+	}
+	if pageSize > 100 {
+		pageSize = 100
 	}
 
 	from := (page - 1) * pageSize
