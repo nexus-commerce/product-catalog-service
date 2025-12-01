@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,7 +24,7 @@ func (r *MongoRepository) GetProductByID(ctx context.Context, id string) (*model
 	var product model.Product
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, err
+		return nil, mongo.ErrNoDocuments
 	}
 
 	err = r.MongoCollection.FindOne(ctx, primitive.M{"_id": objID}).Decode(&product)
@@ -38,8 +37,6 @@ func (r *MongoRepository) GetProductByID(ctx context.Context, id string) (*model
 
 func (r *MongoRepository) GetProductBySKU(ctx context.Context, sku string) (*model.Product, error) {
 	var product model.Product
-
-	fmt.Println(sku)
 
 	err := r.MongoCollection.FindOne(ctx, primitive.M{"sku": sku}).Decode(&product)
 	if err != nil {

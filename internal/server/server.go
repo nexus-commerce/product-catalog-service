@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"product-catalog-service/internal/service"
+
 	pb "github.com/nexus-commerce/nexus-contracts-go/product/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"product-catalog-service/internal/service"
 )
 
 type Server struct {
