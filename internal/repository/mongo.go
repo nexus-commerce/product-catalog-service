@@ -85,7 +85,7 @@ func (r *MongoRepository) UpdateProduct(ctx context.Context, product *model.Prod
 func (r *MongoRepository) DeleteProductByID(ctx context.Context, id string) error {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return err
+		return nil
 	}
 	_, err = r.MongoCollection.DeleteOne(ctx, primitive.M{"_id": objID})
 	if err != nil {
